@@ -1,42 +1,25 @@
-package ${package}.dao;
+package ${package}.mapper;
 
 import java.util.List;
-import ${package}.entity.${modelName};
-import ${package}.dao.page.Page;
-import ${package}.entity.${modelName}Example;
+import ${package}.${packageModel}.${modelName};
+import ${package}.dto.${modulePackage}.${modelName}DTO;
+import ${package}.vo.${modulePackage}.Query${modelName}VO;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 
 /**
 * ${modelRemark}
 * @author ${author}
-* @project ${project}
 * @date  ${now?datetime}
 */
-public interface ${modelName}Mapper{
+@Repository
+public interface ${modelName}Mapper extends BaseMapper<${modelName}>{
 
-    long countByExample(${modelName}Example example);
+    List <${modelName}DTO> queryList(Query${modelName}VO query${modelName}Vo);
 
-    int deleteByExample(${modelName}Example example);
-
-    int deleteByPrimaryKey(Long id);
-
-    int insert(${modelName} record);
-
-    int insertSelective(${modelName} record);
-
-    List <${modelName}> selectByExample(${modelName}Example example);
-
-    List <${modelName}> selectByPageAndExample(Page<${modelName}> page,${modelName}Example example);
-
-    ${modelName} selectByPrimaryKey(Long id);
-
-    int updateByExampleSelective(@Param("record") ${modelName} record, @Param("example") ${modelName}Example example);
-
-    int updateByExample(@Param("record") ${modelName} record, @Param("example") ${modelName}Example example);
-
-    int updateByPrimaryKeySelective(${modelName} record);
-
-    int updateByPrimaryKey(${modelName} record);
 
 }
 

@@ -1,91 +1,107 @@
-package ${package}.api.controller;
+package ${package}.${modulePackage}.controller;
 
-import ${package}.core.result.Result;
-import ${package}.core.result.code.StatusCode;
-import ${package}.util.DataGrid;
+import ${package}.dto.${modulePackage}.${modelName}DTO;
+import ${package}.vo.${modulePackage}.${modelName}VO;
 import ${package}.service.${modelName}Service;
-import ${package}.entity.${modelName};
+import ${package}.${packageModel}.${modelName};
+import ${package}.vo.${modulePackage}.Query${modelName}VO;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import cn.com.exception.MyException;
+import cn.com.response.ResultCode;
+import cn.com.response.ResultMessageJson;
+import cn.com.response.ResultPageJson;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import com.github.dozermapper.core.Mapper;
+
+import javax.annotation.Resource;
+
+import java.util.List;
+import cn.com.utils.Paging;
 
 /**
  * ${modelRemark} 控制器
  * @author ${author}
- * @project ${project}
+
  * @date  ${now?datetime}
  */
-@Controller
-@RequestMapping("${requestUrl}")
-public class ${modelName}Controller extends BaseController{
+@Slf4j
+@RestController
+@Api(tags = "${modelRemark} ")
+@RequestMapping("/api/${modulePackage}")
+public class ${modelName}Controller  extends BaseController {
 
     <#if modelName??>
         <#assign  lower= modelName?uncap_first >
          <#assign service=lower+"Service" >
         </#if>
-    @Autowired
+    @Resource
     private ${modelName}Service ${service};
 
-    /**
-     * 保存
-     *
-     **/
-    @ResponseBody
-    @RequestMapping("save")
-    public Result save(${modelName} ${modelName?uncap_first}) {
+    // dozer深度复制
+    @Resource
+    private Mapper dozerMapper;
 
-        Result result = Result.getError(StatusCode.SYSTEM_ERROR);
-
-        try {
-            int rs=${service}.save(${modelName?uncap_first});
-            result=Result.getSuccess(rs);
-        } catch (Exception e) {
-          e.printStackTrace();
+    @GetMapping(value = "${requestUrl}")
+    @ApiOperation(value = "查询${modelRemark}信息", notes = "查询${modelRemark}信息 分页参数 ?page=1&limit=10")
+    @Paging
+    public  ResultPageJson<List<${modelName}DTO>> queryList(Query${modelName}VO query${modelName}Vo) {
+        List<${modelName}DTO>  list =${service}.queryList(query${modelName}Vo);
+        return ResultPageJson.ok(list);
+    }
+    @GetMapping(value = "${requestUrl}/{Id}")
+    @ApiOperation(value = "根据id查询单个${modelRemark}信息", notes = "根据id查询单个${modelRemark}信息 ")
+    public  ResultPageJson<List<${modelName}DTO>> queryById(@PathVariable("id") Integer id) {
+        List<${modelName}DTO>  list =${service}.queryList(new Query${modelName}VO().setId(id));
+        if(list==null || list.isEmpty()){
+             throw new MyException(ResultCode.NON_EXISTENT_RECORD);
         }
-        return result;
+        return ResultPageJson.ok(list.get(0));
+    }
+    @PostMapping(value = "${requestUrl}")
+    @ApiOperation(value = "新增${modelRemark}信息", notes = "新增${modelRemark}信息  ")
+    public ResultMessageJson save(@Validated @RequestBody ${modelName}VO ${modelName?uncap_first}VO) {
+        ${modelName} ${modelName?uncap_first} = dozerMapper.map(${modelName?uncap_first}VO, ${modelName}.class);
+        boolean operation =${service}.save(${modelName?uncap_first});
+        if (!operation) {
+          throw new MyException(ResultCode.OPERATION_FAILED);
+        }
+        return ResultMessageJson.ok("添加${modelRemark}成功");
     }
 
-    /**
-      * 修改
-     *
-     **/
-    @ResponseBody
-    @RequestMapping("update")
-    public Result update(${modelName} ${modelName?uncap_first}) {
-
-        checkValues("id");
-
-        Result result = Result.getError(StatusCode.SYSTEM_ERROR);
-
-        try {
-            int rs=${service}.updateByPrimaryKeySelective(${modelName?uncap_first});
-         result=Result.getSuccess(rs);
-        } catch (Exception e) {
-            e.printStackTrace();
+    @PutMapping(value = "${requestUrl}/{id}")
+    @ApiOperation(value = "修改${modelRemark}信息", notes = "修改${modelRemark}信息  ")
+    public  ResultMessageJson update(@PathVariable("id") Integer id,@RequestBody ${modelName}VO ${modelName?uncap_first}VO) {
+        ${modelName}  temp = ${service}.getById(id);
+        if (temp == null) {
+             throw new MyException(ResultCode.NON_EXISTENT_RECORD);
         }
-
-        return result;
+        ${modelName} ${modelName?uncap_first} = dozerMapper.map(${modelName?uncap_first}VO, ${modelName}.class);
+        ${modelName?uncap_first}.setId(id);
+        boolean operation = ${service}.updateById(${modelName?uncap_first});
+        if (!operation) {
+             throw new MyException(ResultCode.OPERATION_FAILED);
+        }
+        return ResultMessageJson.ok("修改${modelRemark}成功");
     }
 
-     /**
-      * 获取列表
-      *
-      **/
-    @ResponseBody
-    @RequestMapping("list")
-    public Result getList(Integer pageNo,Integer pageSize,${modelName} ${modelName?uncap_first}) {
-        Result result = Result.getError(StatusCode.SYSTEM_ERROR);
-        try {
-            DataGrid dataGrid=${service}.getDataGrid(pageNo, pageSize, ${modelName?uncap_first});
-            result=Result.getSuccess(dataGrid);
-        } catch (Exception e) {
-            e.printStackTrace();
+    @DeleteMapping(value = "${requestUrl}/{id}")
+    @ApiOperation(value = "删除${modelRemark}信息", notes = "删除${modelRemark}信息  ")
+    public  ResultMessageJson deleted(@PathVariable("id") Integer id) {
+        ${modelName} ${modelName?uncap_first} =  ${service}.getById(id);
+        if (${modelName?uncap_first} == null) {
+             throw new MyException(ResultCode.NON_EXISTENT_RECORD);
         }
-        return result;
+        boolean operation = ${service}.removeById(id);
+        if (!operation) {
+             throw new MyException(ResultCode.OPERATION_FAILED);
+        }
+        return ResultMessageJson.ok("删除${modelRemark}成功");
     }
-
 }
 
 

@@ -1,0 +1,42 @@
+package ${package}.dto.${modulePackage};
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+
+<#list packages as p>
+import ${p};
+</#list>
+
+/**
+ * ${modelRemark}DTO</p>
+ * @author ${author}
+ * @date  ${now?datetime}
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class ${modelName}DTO   {
+
+	private static final long serialVersionUID = ${DTO_UID};
+
+	<#list columns as item>
+	/**
+	*  ${item.remark} ${item.name}
+	*/
+	@ApiModelProperty(value = "${item.remark}")
+	<#if item.name == "created_at">
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	</#if>
+	<#if item.name == "updated_at">
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+	</#if>
+	private ${item.typeName} ${item.fieldName};
+
+	</#list>
+
+
+}

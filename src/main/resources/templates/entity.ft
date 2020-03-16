@@ -1,5 +1,14 @@
-package ${package}.entity;
+package ${package}.${packageModel};
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 <#list packages as p>
 import ${p};
@@ -9,49 +18,34 @@ import ${p};
  * ${modelRemark}实体</p>
  * ${modelName}对应数据库表 ${tableName}
  * @author ${author}
- * @project ${project}
  * @date  ${now?datetime}
  */
-public class ${modelName} implements Serializable {
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class ${modelName}  extends Model<${modelName}> {
 
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = ${PO_UID};
+
 	<#list columns as item>
+	/**
+	*  ${item.remark} ${item.name}
+	*/
 	<#if item.name == idField>
-	//主键字段
+	@TableId(value = "id", type = IdType.AUTO)
 	</#if>
-	private ${item.typeName} ${item.fieldName};// ${item.remark} ${item.name}
-	
+	<#if item.name == "created_at">
+	@TableField(fill = FieldFill.INSERT)
+	</#if>
+	<#if item.name == "updated_at">
+	@TableField(fill = FieldFill.INSERT_UPDATE)
+	</#if>
+	private ${item.typeName} ${item.fieldName};
+
 	</#list>
-	//set 和 get方法
-	
-	<#list columns as item>
-	/**
-	 * ${item.remark}
-	 *
-	 * @param ${item.fieldName}
-	 */
-	public void set${item.fieldName?cap_first}(${item.typeName} ${item.fieldName}) {
-	
-		this.${item.fieldName} = ${item.fieldName};
-	}
-	
-	/**
-	 * ${item.remark}
-	 *
-	 * @return ${item.typeName}
-	 */
-	public ${item.typeName} get${item.fieldName?cap_first}() {
-	
-		return this.${item.fieldName};
-	}
-	
-	</#list>
-	
 	@Override
-	public String toString() {
-		<#assign sign=false>
-		
-		return "${modelName} [<#list columns as item><#if sign>,</#if>${item.fieldName}=" + ${item.fieldName} + "<#assign sign=true></#list>]";
+	protected Serializable pkVal() {
+		return this.id;
 	}
+
 }

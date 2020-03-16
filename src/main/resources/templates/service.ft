@@ -1,57 +1,25 @@
 package ${package}.service;
 
-import ${package}.entity.${modelName};
-import java.lang.Long;
-import java.lang.Integer;
-import ${package}.util.DataGrid;
+import ${package}.${packageModel}.${modelName};
+import ${package}.dto.${modulePackage}.${modelName}DTO;
+import ${package}.vo.${modulePackage}.Query${modelName}VO;
+
+import java.util.List;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * ${modelRemark} Service
  * @author ${author}
- * @project ${project}
+
  * @date  ${now?datetime}
  */
-public interface ${modelName}Service {
-
-    /**
-     * 保存
-     *
-     * @param ${modelName?uncap_first}
-     * @return
-     */
-	public int save(${modelName} ${modelName?uncap_first});
-
-    /**
-     * 修改
-     *
-     * @param ${modelName?uncap_first}
-     * @return
-     */
-    public int updateByPrimaryKeySelective(${modelName} ${modelName?uncap_first});
-
-    /**
-     * 根据id查询
-     *
-     * @param id
-     * @return
-     */
-    public ${modelName} selectByPrimaryKey(Long id);
-
-    /**
-     * 根据id删除
-     *
-     * @param id
-     * @return
-     */
-    public int deleteByPrimaryKey(Long id);
+public interface ${modelName}Service  extends IService<${modelName}>{
 
     /**
      * 获取列表数据
-     * @param pageNo
-     * @param pageSize
      * @param ${modelName?uncap_first}
      * @return
      */
-    public DataGrid getDataGrid(Integer pageNo, Integer pageSize, ${modelName} ${modelName?uncap_first});
+    public List<${modelName}DTO> queryList(Query${modelName}VO query${modelName}Vo);
 
 }

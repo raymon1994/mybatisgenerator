@@ -16,14 +16,16 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import com.mysql.cj.util.StringUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.utility.StringUtil;
 
 /**
  * mybatis代码生成器<br/>
  * 直接运行这个类，配置在resources里面的config.json
  * @author panjing
- * @project build-code	
+ * @project build-code
  * @date 2016年6月14日 下午5:43:59
  */
 @SuppressWarnings("unchecked")
@@ -109,8 +111,9 @@ public class BuildHelper {
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
-
-			String filePath = String.valueOf(tableMap.get("basePath")) + dir.getPath() + "/" + tableMap.get("modelName") + template.get("outSuffix");
+			String outPrefix = template.get("outPrefix");
+			String filePath = String.valueOf(tableMap.get("basePath")) + dir.getPath() + "/" +
+					(StringUtils.isNullOrEmpty(outPrefix)?"":outPrefix) + tableMap.get("modelName") + template.get("outSuffix");
 
 			File target = new File(filePath);
 			File dirTarget=new File(target.getParent());
@@ -153,14 +156,17 @@ public class BuildHelper {
 
 		String author = jsonObject.getString("author");
 
+		String modulePackage = jsonObject.getString("modulePackage");
+
 		//输出目录根路径
 		String basePath = jsonObject.getString("basePath");
 		if (basePath == null) {
 			basePath = "";
 		}
 
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 		String basePackage = (String) jsonObject.get("package");
+		String basePackageModel = (String) jsonObject.get("packageModel");
 		JSONArray templates = jsonObject.getJSONArray("templates");
 		// 获取表
 		Map<String, Object> tableMapping = (Map<String, Object>) jsonObject.get("tableMapping");
@@ -210,6 +216,9 @@ public class BuildHelper {
 				String name = rs.getString("COLUMN_NAME");
 				String remark = rs.getString("REMARKS");
 				String type = rs.getString("TYPE_NAME");
+				int size = rs.getInt("COLUMN_SIZE");
+				int decimalDigits = rs.getInt("DECIMAL_DIGITS");
+				int nullable = rs.getInt("NULLABLE");
 
 				String fieldName = "";
 				String[] strs = name.split("_");
@@ -226,9 +235,17 @@ public class BuildHelper {
 				colMap.put("remark", remark);
 				colMap.put("name", name);
 				colMap.put("fieldName", fieldName);
+				colMap.put("size", size>999?0:size); //超出三位数不做控制
+				colMap.put("decimalDigits", decimalDigits);
+				if(size>0&&decimalDigits>0){
+					colMap.put("size", size-decimalDigits); //总长度 去除小数位长度
+				}
+				colMap.put("nullable", nullable);
 				Map<String ,String> typeMapper=new HashMap<String, String>();
 				typeMapper.put("INT","INTEGER");
+				typeMapper.put("BIT","INTEGER");
 				typeMapper.put("DATETIME","TIMESTAMP");
+				typeMapper.put("LONGTEXT","VARCHAR");
 
 				if (name.equals(idField)) {
 					idType=handlerType(type).get("typeName").toString();
@@ -263,13 +280,18 @@ public class BuildHelper {
 
 			tableMap.put("idFieldName", idFieldName);
 			tableMap.put("package", basePackage);
+			tableMap.put("packageModel", basePackageModel);
 			tableMap.put("templates", templates);
 			tableMap.put("columns", columns);
 			tableMap.put("modelRemark", tableRemark);
 			tableMap.put("author", author);
+			tableMap.put("modulePackage", modulePackage);
+			tableMap.put("DTO_UID", getUID());
+			tableMap.put("PO_UID", getUID());
 			//当前日期
 			tableMap.put("now", new Date());
 
+			long l = System.currentTimeMillis();
 
 			modules.add(tableMap);
 		}
@@ -286,7 +308,7 @@ public class BuildHelper {
 		Map<String, Object> rs = new HashMap<String, Object>();
 
 		String[] longs = new String[] { "TINYINT", "SMALLINT", "MEDIUMINT", "BIGINT" };
-		String[] strings = new String[] { "VARCHAR", "CHAR", "TEXT", "MEDIUMTEXT" };
+		String[] strings = new String[] { "VARCHAR", "CHAR", "TEXT","LONGTEXT", "MEDIUMTEXT" };
 		String[] ints = new String[] {"INTEGER","INT", "BIT", "BOOLEAN" };
 		String[] doubles = new String[] { "FLOAT", "DOUBLE", "DECIMAL" };
 		String[] dates = new String[] { "DATE", "TIME", "DATETIME", "TIMESTAMP", "YEAR" };
@@ -301,11 +323,11 @@ public class BuildHelper {
 			rs.put("package", "java.lang.Integer");
 			rs.put("typeName", "Integer");
 		} else if (Arrays.asList(doubles).contains(type)) {
-			rs.put("package", "java.lang.Double");
-			rs.put("typeName", "Double");
+			rs.put("package", "java.math.BigDecimal");
+			rs.put("typeName", "BigDecimal");
 		} else if (Arrays.asList(dates).contains(type)) {
-			rs.put("package", "java.util.Date");
-			rs.put("typeName", "Date");
+			rs.put("package", "java.time.LocalDateTime;");
+			rs.put("typeName", "LocalDateTime");
 		} else {
 			rs.put("package", "java.lang.Object");
 			rs.put("typeName", "Object");
@@ -365,5 +387,34 @@ public class BuildHelper {
 		}
 		return str;
 	}
+	//获取uid
+	public String getUID(){
 
+		 String result = "";
+
+		 Date date = new Date();
+
+		 result += System.currentTimeMillis();
+
+		 Double rand = Math.random()*10000000;
+
+		 if(rand < 10)
+
+		 result += "000" + rand.toString().substring(0, 1);
+
+		 else if(rand < 100)
+
+		 result += "00" + rand.toString().substring(0, 2);
+
+		 else if(rand < 1000)
+
+		 result += "0" + rand.toString().substring(0, 3);
+
+		 else
+
+		 result += rand.toString().substring(0, 5);
+
+	 return "-"+result+"L";
+
+	}
 }
