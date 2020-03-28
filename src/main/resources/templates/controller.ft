@@ -6,10 +6,13 @@ import ${package}.service.${modelName}Service;
 import ${package}.${packageModel}.${modelName};
 import ${package}.vo.${modulePackage}.Query${modelName}VO;
 
+import cn.com.${modulePackage}.controller.BaseController;
 import cn.com.exception.MyException;
 import cn.com.response.ResultCode;
 import cn.com.response.ResultMessageJson;
 import cn.com.response.ResultPageJson;
+import cn.com.response.ResultJson;
+
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,14 +56,14 @@ public class ${modelName}Controller  extends BaseController {
         List<${modelName}DTO>  list =${service}.queryList(query${modelName}Vo);
         return ResultPageJson.ok(list);
     }
-    @GetMapping(value = "${requestUrl}/{Id}")
+    @GetMapping(value = "${requestUrl}/{id}")
     @ApiOperation(value = "根据id查询单个${modelRemark}信息", notes = "根据id查询单个${modelRemark}信息 ")
-    public  ResultPageJson<List<${modelName}DTO>> queryById(@PathVariable("id") Integer id) {
+    public  ResultJson<${modelName}DTO> queryById(@PathVariable("id") Integer id) {
         List<${modelName}DTO>  list =${service}.queryList(new Query${modelName}VO().setId(id));
         if(list==null || list.isEmpty()){
              throw new MyException(ResultCode.NON_EXISTENT_RECORD);
         }
-        return ResultPageJson.ok(list.get(0));
+        return ResultJson.ok(list.get(0));
     }
     @PostMapping(value = "${requestUrl}")
     @ApiOperation(value = "新增${modelRemark}信息", notes = "新增${modelRemark}信息  ")

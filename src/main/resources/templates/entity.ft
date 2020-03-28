@@ -1,5 +1,6 @@
 package ${package}.${packageModel};
 
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -40,6 +41,9 @@ public class ${modelName}  extends Model<${modelName}> {
 	<#if item.name == "updated_at">
 	@TableField(fill = FieldFill.INSERT_UPDATE)
 	</#if>
+	<#if item.name == "deleted">
+	@TableLogic
+	</#if>
 	private ${item.typeName} ${item.fieldName};
 
 	</#list>
@@ -47,5 +51,8 @@ public class ${modelName}  extends Model<${modelName}> {
 	protected Serializable pkVal() {
 		return this.id;
 	}
+	<#list columns as item>
+	public static final String  ${item.nameUpper} = "${item.name}";
 
+	</#list>
 }

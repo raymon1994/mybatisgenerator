@@ -24,7 +24,11 @@ import ${p};
 public class Query${modelName}VO   {
 
 	<#list columns as item>
-	<#if item.name != "created_at" && item.name != "updated_at">
+	<#if item.name == "deleted">
+	@ApiModelProperty(hidden=true)
+	private ${item.typeName} ${item.fieldName};
+	</#if>
+	<#if item.name != "created_at" && item.name != "updated_at" && item.name != "deleted">
 	@ApiModelProperty(value = "${item.remark}")
 	private ${item.typeName} ${item.fieldName};
 
@@ -36,6 +40,7 @@ public class Query${modelName}VO   {
 	@ApiModelProperty(value = "结束时间")
 	private String date2;
 	</#if>
+
 	</#list>
 
 }

@@ -5,7 +5,7 @@
     <resultMap id="BaseResultMap" type="${package}.dto.${modulePackage}.${modelName}DTO" >
         <id column="${idField}" property="${idFieldName}"/>
         <#list columns as item>
-        <#if item.fieldName!=idFieldName>
+        <#if item.fieldName!=idFieldName &&  item.name!="deleted">
         <result column="${item.name}" property="${item.fieldName}" jdbcType="${item.type}" />
         </#if>
    		 </#list>
@@ -13,18 +13,23 @@
 
     <sql id="Base_Column_List" >
 		<#assign sign=false>
-		<#list columns as item><#if sign==true>,</#if>${item.name}<#assign sign=true></#list>
+		<#list columns as item><#if sign==true>,</#if>t.${item.name}<#assign sign=true></#list>
     </sql>
 
-    <select id="queryList" resultMap="BaseResultMap" parameterType="${package}.vo.${modulePackage}.Query${modelName}VO" >
+    <select id="queryList" resultType="${package}.vo.${modulePackage}.${modelName}DTO"  parameterType="${package}.vo.${modulePackage}.Query${modelName}VO" >
         select
         <include refid="Base_Column_List" />
         from ${tableName} t
         WHERE 1=1
         <#list columns as item>
             <#if item.name != "created_at" && item.name != "updated_at">
-            <if test="${item.fieldName} != null" >
-                  AND t.${item.name} = ${"#"}{${item.fieldName},jdbcType=${item.type}}
+                <#if item.type == "VARCHAR">
+            <if test="${item.fieldName} != null  and ${item.fieldName} != '' " >
+             </#if>
+                <#if item.type != "VARCHAR">
+            <if test="${item.fieldName} != null " >
+                </#if>
+                  AND t.${item.name} = ${"#"}{${item.fieldName}}
             </if>
              </#if>
             <#if item.name == "created_at">

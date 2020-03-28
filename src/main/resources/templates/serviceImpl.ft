@@ -27,13 +27,17 @@ public class ${modelName}ServiceImpl extends ServiceImpl<${modelName}Mapper, ${m
 
 	/**
 	 * 获取列表数据
-	 * @param ${modelName?uncap_first}
+	 * @param query${modelName}Vo
 	 * @return
 	 */
 
 	@Override
 	public List<${modelName}DTO> queryList(Query${modelName}VO query${modelName}Vo){
-
+		<#list columns as item>
+		<#if item.name == "deleted">
+		query${modelName}Vo.setDeleted(0);
+		</#if>
+		</#list>
 		return  ${mapper}.queryList(query${modelName}Vo);
 	}
 

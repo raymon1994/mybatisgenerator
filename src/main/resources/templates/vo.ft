@@ -24,7 +24,7 @@ import ${p};
 public class ${modelName}VO   {
 
 	<#list columns as item>
-	<#if item.name != "created_at" && item.name != "updated_at" && item.name != "id">
+	<#if item.name != "created_at" && item.name != "updated_at" && item.name != "id" && item.name != "deleted">
 	/**
 	*  ${item.remark} ${item.name}
 	*/
