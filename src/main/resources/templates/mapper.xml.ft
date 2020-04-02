@@ -16,7 +16,7 @@
 		<#list columns as item><#if sign==true>,</#if>t.${item.name}<#assign sign=true></#list>
     </sql>
 
-    <select id="queryList" resultType="${package}.vo.${modulePackage}.${modelName}DTO"  parameterType="${package}.vo.${modulePackage}.Query${modelName}VO" >
+    <select id="queryList" resultType="${package}.dto.${modulePackage}.${modelName}DTO"  parameterType="${package}.vo.${modulePackage}.Query${modelName}VO" >
         select
         <include refid="Base_Column_List" />
         from ${tableName} t
