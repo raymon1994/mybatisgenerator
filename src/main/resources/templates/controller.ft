@@ -49,14 +49,14 @@ public class ${modelName}Controller  extends BaseController {
     @Resource
     private Mapper dozerMapper;
 
-    @GetMapping(value = "${requestUrl}")
+    @GetMapping(value = "/${requestUrl}")
     @ApiOperation(value = "查询${modelRemark}信息", notes = "查询${modelRemark}信息 分页参数 ?page=1&limit=10")
     @Paging
     public  ResultPageJson<List<${modelName}DTO>> queryList(Query${modelName}VO query${modelName}Vo) {
         List<${modelName}DTO>  list =${service}.queryList(query${modelName}Vo);
         return ResultPageJson.ok(list);
     }
-    @GetMapping(value = "${requestUrl}/{id}")
+    @GetMapping(value = "/${requestUrl}/{id}")
     @ApiOperation(value = "根据id查询单个${modelRemark}信息", notes = "根据id查询单个${modelRemark}信息 ")
     public  ResultJson<${modelName}DTO> queryById(@PathVariable("id") Integer id) {
         List<${modelName}DTO>  list =${service}.queryList(new Query${modelName}VO().setId(id));
@@ -65,7 +65,7 @@ public class ${modelName}Controller  extends BaseController {
         }
         return ResultJson.ok(list.get(0));
     }
-    @PostMapping(value = "${requestUrl}")
+    @PostMapping(value = "/${requestUrl}")
     @ApiOperation(value = "新增${modelRemark}信息", notes = "新增${modelRemark}信息  ")
     public ResultMessageJson save(@Validated @RequestBody ${modelName}VO ${modelName?uncap_first}VO) {
         ${modelName} ${modelName?uncap_first} = dozerMapper.map(${modelName?uncap_first}VO, ${modelName}.class);
@@ -76,7 +76,7 @@ public class ${modelName}Controller  extends BaseController {
         return ResultMessageJson.ok("添加${modelRemark}成功");
     }
 
-    @PutMapping(value = "${requestUrl}/{id}")
+    @PutMapping(value = "/${requestUrl}/{id}")
     @ApiOperation(value = "修改${modelRemark}信息", notes = "修改${modelRemark}信息  ")
     public  ResultMessageJson update(@PathVariable("id") Integer id,@RequestBody ${modelName}VO ${modelName?uncap_first}VO) {
         ${modelName}  temp = ${service}.getById(id);
@@ -92,7 +92,7 @@ public class ${modelName}Controller  extends BaseController {
         return ResultMessageJson.ok("修改${modelRemark}成功");
     }
 
-    @DeleteMapping(value = "${requestUrl}/{id}")
+    @DeleteMapping(value = "/${requestUrl}/{id}")
     @ApiOperation(value = "删除${modelRemark}信息", notes = "删除${modelRemark}信息  ")
     public  ResultMessageJson deleted(@PathVariable("id") Integer id) {
         ${modelName} ${modelName?uncap_first} =  ${service}.getById(id);

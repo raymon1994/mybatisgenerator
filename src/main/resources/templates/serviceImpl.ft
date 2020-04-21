@@ -42,4 +42,23 @@ public class ${modelName}ServiceImpl extends ServiceImpl<${modelName}Mapper, ${m
 	}
 
 
+	/**
+	* 获取单条数据
+	* @param query${modelName}Vo
+	* @return
+	*/
+
+	@Override
+	public ${modelName}DTO queryOne(Query${modelName}VO query${modelName}Vo){
+		<#list columns as item>
+		<#if item.name == "deleted">
+		query${modelName}Vo.setDeleted(0);
+		</#if>
+		</#list>
+		List<${modelName}DTO> list = ${mapper}.queryList(query${modelName}Vo);
+		if(list!=null && !list.isEmpty())){
+			return list.get(0);
+		}
+		return null;
+	}
 }

@@ -8,21 +8,12 @@
     "username": "root",
     "password": "root"
   },
-  "basePath": "C:/Users/Admin/Desktop/sd-runscore/",
+  "basePath": "C:/Users/Admin/Desktop/sd-runscore/111",
   "tableMapping": {
-/*    "user_unionpay": {
-      "remark": "码商云闪付支付信息"
-    },
-    "user_wechatpay": {
-      "remark": "码商微信支付信息"
-    },
-    "user_alipay": {
-      "remark": "码商支付宝支付信息"
-    },*/
-    "app_config": {
-    /*  "remark": "app配置信息管理"*/
+    "admin_summary_date": {
+      "name": "",
+      "remark": ""
     }
-
   },
   "templates": [
     {
@@ -35,40 +26,41 @@
       "outSuffix": "Mapper.xml",
       "outPath": "base/model/src/main/java/cn/com/mapper"
     },
-/*    {
+    {
       "template": "mapper.ft",
       "outSuffix": "Mapper.java",
       "outPath": "base/model/src/main/java/cn/com/mapper"
-    },*/
-/*    {
-       "template": "service.ft",
-       "outSuffix": "Service.java",
-       "outPath": "service/src/main/java/cn/com/service"
-     },
-     {
-       "template": "serviceImpl.ft",
-       "outSuffix": "ServiceImpl.java",
-       "outPath": "service/src/main/java/cn/com/service/impl"
-     },*/
-/*   {
+    },
+    {
+      "template": "service.ft",
+      "outSuffix": "Service.java",
+      "outPath": "service/src/main/java/cn/com/service"
+    },
+    {
+      "template": "serviceImpl.ft",
+      "outSuffix": "ServiceImpl.java",
+      "outPath": "service/src/main/java/cn/com/service/impl"
+    },
+    {
       "template": "controller.ft",
       "outSuffix": "Controller.java",
       "outPath": "admin/src/main/java/cn/com/admin/controller"
-    } ,*/
-/*      {
-         "template": "dto.ft",
-         "outSuffix": "DTO.java",
-         "outPath": "base/model/src/main/java/cn/com/dto/admin"
-       }*/
+    },
+    {
+      "template": "dto.ft",
+      "outSuffix": "DTO.java",
+      "outPath": "base/model/src/main/java/cn/com/dto/admin"
+    },
     {
       "template": "vo.ft",
       "outSuffix": "VO.java",
       "outPath": "base/model/src/main/java/cn/com/vo/admin"
-    }/*,{
+    },
+    {
       "template": "queryvo.ft",
       "outPrefix": "Query",
       "outSuffix": "VO.java",
       "outPath": "base/model/src/main/java/cn/com/vo/admin"
-    }*/
+    }
   ]
 }

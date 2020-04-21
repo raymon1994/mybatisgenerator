@@ -22,4 +22,11 @@ public interface ${modelName}Service  extends IService<${modelName}>{
      */
     public List<${modelName}DTO> queryList(Query${modelName}VO query${modelName}Vo);
 
+    /**
+    * 获取单条数据
+    * @param query${modelName}Vo
+    * @return
+    */
+    public ${modelName}DTO queryOne(Query${modelName}VO query${modelName}Vo);
+
 }
